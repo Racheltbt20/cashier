@@ -12,7 +12,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return view('category');
+        $categories = Category::all();
+        return view('category', compact('categories'));
     }
 
     /**
@@ -28,7 +29,20 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // dd($request);
+        $message = [
+            'required' => ':attribute harus diisi',
+            'min' => ':attribute minimal :min karakter',
+            'max' => ':attribute minimal :max karakter',
+        ];
+
+        $validationData = $request->validate([
+            'name' => 'required|min:2|max:20'
+        ], $message);
+
+        Category::create($validationData);
+
+        return redirect()->back()->with('success', 'Category berhasil ditambahkan');
     }
 
     /**
@@ -44,7 +58,8 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        //
+        $category = Category::find($category->id);
+        return $category;
     }
 
     /**
@@ -52,7 +67,20 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        //
+        $message = [
+            'required' => ':attribute harus diisi',
+            'min' => ':attribute minimal :min karakter',
+            'max' => ':attribute minimal :max karakter',
+        ];
+
+        $validationData = $request->validate([
+            'name' => 'required|min:2|max:20'
+        ], $message);
+
+        Category::where('id', $category->id)
+                ->update($validationData);
+        
+        return redirect()->back()->with('success', 'Data berhasil diedit');
     }
 
     /**
@@ -60,6 +88,8 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+        Category::find($category->id)->delete();
+
+        return redirect()->back()->with('success', 'Data berhasil dihapus');
     }
 }

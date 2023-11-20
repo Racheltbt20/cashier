@@ -4,6 +4,12 @@
     
     <div class="container">
         <div class="row">
+            @if (Session::has('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>{{ session::get('success') }}</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
             <div class="col-7">
                 <div class="card">
                     <div class="card-header">
@@ -14,16 +20,24 @@
                             <tr>
                                 <th>#</th>
                                 <th>Nama Kategori</th>
-                                <th >Aksi</th>
+                                <th>Aksi</th>
                             </tr>
+                            @foreach($categories as $category)
                             <tr>
-                                <td>1</td>
-                                <td>Perkakas</td>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $category->name }}</td>
                                 <td>
-                                    <a href="{{ route('category.edit', 1) }}" class="btn btn-sm btn-warning">Edit</a>
-                                    <a href="{{ route('category.destroy', 1) }}" class="btn btn-sm btn-danger">Hapus</a>
+                                    <div class="d-flex" style="gap:5px;">
+                                        <button onclick="edit({{ $category->id }})" class="btn btn-sm btn-warning">Edit</button>
+                                        <form action="{{ route('category.destroy', $category->id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn btn-sm btn-danger" onclick="return confirm('Apakah anda yakin ingin menghapus data ini? ')">Hapus</button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
+                            @endforeach
                         </table>
                     </div>
                 </div>
@@ -31,17 +45,23 @@
             <div class="col-5">
                 <div class="card">
                     <div class="card-header">
-                        Tambah Kategori
+                        <span id="card-head">Tambah Kategori</span>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('category.store') }}">
+                        <form id="form-category" action="{{ route('category.store') }}" method="POST">
                             @csrf
+                            @method('POST')
                             <div class="form-group mb-2">
                                 <label for="name">Category Name</label>
-                                <input type="text" class="form-control" name="name" id="name" placeholder="category name..." required>
+                                <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" id="name" placeholder="category name..." required>
+                                @error('name')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
                             <div class="form-group d-flex justify-content-end">
-                                <input type="reset" value="Reset" class="btn btn-danger mx-1">
+                                <button class="btn btn-danger mx-1" onclick="batal()" type="reset">batal</button>
                                 <input type="submit" value="Save" class="btn btn-success">
                             </div>
                         </form>
@@ -50,5 +70,26 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function edit(a) {
+            // console.log('oke');
+            document.getElementById("card-head").innerHTML = "Edit Category";
+            $.get('category/' + a + '/edit', function(data) {
+                $('#name').val(data.name);
+                var action = '{{ route("category.update", ":id") }}';
+                action = action.replace(":id", data.id);
+                $("#form-category").attr("action", action);
+                $("input[name='_method']").val("PUT");
+            })
+        }
+
+        function batal() {
+            document.getElementById("card-head").innerHTML = "Tambah Category";
+            var action = '{{ route("category.store") }}';
+            $("#form-category").attr("action", action);
+            $('#name').val("");
+        }
+    </script>
 
 @endsection
