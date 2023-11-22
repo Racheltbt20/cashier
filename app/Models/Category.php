@@ -12,7 +12,7 @@ class Category extends Model
     protected $guarded = ['id'];
 
     /* RELASI */
-    public function getItem() {
+    public function item() {
         return $this->hasMany(Item::class);
     }
 }

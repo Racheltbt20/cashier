@@ -15,53 +15,84 @@
                                 <th>Category</th>
                                 <th>Name</th>
                                 <th>Price</th>
-                                <th>Qty</th>
+                                <th>Stock</th>
                                 <th>Aksi</th>
                             </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>Perkakas</td>
-                                <td>Palu</td>
-                                <td>Rp. {{ number_format(50000, 2, '.', '.') }}</td>
-                                <td>20</td>
-                                <td>
-                                    <a href="{{ route('item.edit', 1) }}" class="btn btn-sm btn-warning">Edit</a>
-                                    <a href="{{ route('item.destroy', 1) }}" class="btn btn-sm btn-danger">Hapus</a>
-                                </td>
-                            </tr>
+                            @foreach ($items as $item)    
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $item->category->name }}</td>
+                                    <td>{{ $item->name }}</td>
+                                    <td>Rp. {{ number_format($item->price, 2, '.', '.') }}</td>
+                                    <td>{{ $item->stock }}</td>
+                                    <td>
+                                        <div class="d-flex" style="gap:5px;">
+                                            <button onclick="edit({{ $item->id }})" class="btn btn-sm btn-warning">Edit</button>
+                                            <form action="{{ route('item.destroy', $item->id) }}" method="post">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah anda yakin ingin menghapus data ini? ')">Hapus</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </table>
                     </div>
                 </div>
             </div>
             <div class="col-5">
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header" id="card-head">
                         Tambah Item
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('item.store') }}">
+                        <form action="{{ route('item.store') }}" method="POST" id="form-item">
                             @csrf
+                            @method('POST')
                             <div class="form-group mb-2">
                                 <label for="name">Item Category</label>
-                                <select class="form-select" id="category_id" name="category_id" aria-label="category_id">
+                                <select class="form-select @error('category_id') is-invalid @enderror" id="category_id" name="category_id" aria-label="category_id">
                                     <option selected disabled>Item Category...</option>
-                                    <option value="1">Perkakas</option>
+                                    @foreach ($categories as $category)    
+                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    @endforeach
                                 </select>
+                                @error('category_id')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
                             <div class="form-group mb-2">
                                 <label for="name">Item Name</label>
-                                <input type="text" class="form-control" name="name" id="name" placeholder="item name..." required>
+                                <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" id="name" placeholder="item name..." required>
+                                @error('name')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
                             <div class="form-group mb-2">
                                 <label for="price">Price</label>
-                                <input type="text" class="form-control" name="price" id="price" placeholder="item price..." required>
+                                <input type="text" class="form-control @error('price') is-invalid @enderror" name="price" id="price" placeholder="item price..." required>
+                                @error('price')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
                             <div class="form-group mb-2">
-                                <label for="">Qty</label>
-                                <input type="number" class="form-control" name="stock" id="stock" placeholder="item stock..." required>
+                                <label for="">Stock</label>
+                                <input type="number" class="form-control @error('stock') is-invalid @enderror" name="stock" id="stock" placeholder="item stock..." required>
+                                @error('stock')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
                             <div class="form-group d-flex justify-content-end">
-                                <input type="reset" value="Reset" class="btn btn-danger mx-1">
+                                <button class="btn btn-danger mx-1" onclick="batal()" type="reset">batal</button>
                                 <input type="submit" value="Save" class="btn btn-success">
                             </div>
                         </form>
@@ -70,5 +101,29 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function edit(a) {
+            // console.log('oke');
+            document.getElementById("card-head").innerHTML = "Edit Item";
+            $.get('item/' + a + '/edit', function(data) {
+                $('#category_id').val(data.category_id);
+                $('#name').val(data.name);
+                $('#price').val(data.price);
+                $('#stock').val(data.stock);
+                var action = '{{ route("item.update", ":id") }}';
+                action = action.replace(":id", data.id);
+                $("#form-item").attr("action", action);
+                $("input[name='_method']").val("PUT");
+            })
+        }
+
+        function batal() {
+            document.getElementById("card-head").innerHTML = "Tambah Category";
+            var action = '{{ route("category.store") }}';
+            $("#form-category").attr("action", action);
+            $('#name').val("");
+        }
+    </script>
 
 @endsection

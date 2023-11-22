@@ -12,7 +12,7 @@ class Item extends Model
     protected $guarded = ['id'];
 
     /* RELASI */
-    public function getCategory() {
+    public function category() {
         return $this->belongsTo(Category::class);
     }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class ItemController extends Controller
@@ -12,7 +13,10 @@ class ItemController extends Controller
      */
     public function index()
     {
-        return view('item');
+        return view('item', [
+            'categories' => Category::all(),
+            "items" => Item::all()
+        ]);
     }
 
     /**
@@ -28,7 +32,23 @@ class ItemController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // dd($request);
+        $message = [
+            'required' => ':attribute harus diisi',
+            'min' => ':attribute minimal :min karakter',
+            'max' => ':attribute minimal :max karakter',
+        ];
+
+        $validationData = $request->validate([
+            'category_id' =>'required',
+            'name' => 'required|min:2|max:20',
+            'price' => 'required',
+            'stock' => 'required'
+        ], $message);
+
+        Item::create($validationData);
+
+        return redirect()->back()->with('success', 'Item berhasil ditambahkan');
     }
 
     /**
@@ -44,7 +64,8 @@ class ItemController extends Controller
      */
     public function edit(Item $item)
     {
-        //
+        $item = Item::find($item->id);
+        return $item;
     }
 
     /**
@@ -52,7 +73,23 @@ class ItemController extends Controller
      */
     public function update(Request $request, Item $item)
     {
-        //
+        $message = [
+            'required' => ':attribute harus diisi',
+            'min' => ':attribute minimal :min karakter',
+            'max' => ':attribute minimal :max karakter',
+        ];
+
+        $validationData = $request->validate([
+            'category_id' =>'required',
+            'name' => 'required|min:2|max:20',
+            'price' => 'required',
+            'stock' => 'required'
+        ], $message);
+
+        Item::where('id', $item->id)
+                ->update($validationData);
+        
+        return redirect()->back()->with('success', 'Data berhasil diedit');
     }
 
     /**
@@ -60,6 +97,8 @@ class ItemController extends Controller
      */
     public function destroy(Item $item)
     {
-        //
+        Item::find($item->id)->delete();
+
+        return redirect()->back()->with('success', 'Item berhasil dihapus!');
     }
 }
