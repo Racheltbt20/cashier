@@ -10,7 +10,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
-            <div class="col-7">
+            <div class="col-lg-7 mb-4">
                 <div class="card">
                     <div class="card-header">
                         Data Kategori
@@ -42,7 +42,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-5">
+            <div class="col-lg-5">
                 <div class="card">
                     <div class="card-header">
                         <span id="card-head">Tambah Kategori</span>
