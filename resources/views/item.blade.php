@@ -12,8 +12,8 @@
                         <table class="table table-striped">
                             <tr>
                                 <th>#</th>
-                                <th>Category</th>
                                 <th>Name</th>
+                                <th>Category</th>
                                 <th>Price</th>
                                 <th>Stock</th>
                                 <th>Aksi</th>
@@ -21,8 +21,8 @@
                             @foreach ($items as $item)    
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $item->category->name }}</td>
                                     <td>{{ $item->name }}</td>
+                                    <td>{{ $item->category->name }}</td>
                                     <td>Rp. {{ number_format($item->price, 2, '.', '.') }}</td>
                                     <td>{{ $item->stock }}</td>
                                     <td>

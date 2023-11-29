@@ -30,5 +30,6 @@ Route::middleware('auth')->group(function() {
     Route::resource('/category', CategoryController::class);
     Route::resource('/item', ItemController::class);
     Route::resource('/transaction', TransactionController::class);
+    Route::get('/transaction/add/{id}', [TransactionController::class, 'add'])->name('transaction.add');
 });
 

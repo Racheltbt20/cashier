@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transaction;
+use App\Models\Item;
 use Illuminate\Http\Request;
 
 class TransactionController extends Controller
@@ -12,7 +13,37 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        return view('transaction');
+        // session()->flush();
+        return view('transaction', [
+            "items" => Item::all()
+        ]);
+    }
+
+    /**
+     * Function tambahan untuk cart
+     */
+    public function add($id)
+    {
+        $item = Item::findorfail($id);
+
+        $cart = session()->get('cart');
+
+        if(isset($cart[$id])){
+            $cart[$id]['qty'] += 1;
+            $cart[$id]['subtotal'] = $item->price * $cart[$id]['qty'];
+        } else{
+            $cart[$id] = [
+                "id" => $item->id,
+                "name" => $item->name,
+                "qty" => 1,
+                "subtotal" => $item->price
+            ];
+        }
+
+        session()->put('cart', $cart);
+        // return session()->get('cart');
+        return redirect()->back();
+
     }
 
     /**

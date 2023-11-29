@@ -6,28 +6,30 @@
             <div class="col-7">
                 <div class="card">
                     <div class="card-header">
-                        Data Transaksi
+                        Data Item
                     </div>
                     <div class="card-body">
                         <table class="table table-striped">
                             <tr>
                                 <th>#</th>
-                                <th>Item Name</th>
+                                <th>Name</th>
                                 <th>Category</th>
                                 <th>Stock</th>
                                 <th>Price</th>
-                                <th>Action</th>
+                                <th>Aksi</th>
                             </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>Palu</td>
-                                <td>Perkakas</td>
-                                <td>20</td>
-                                <td>Rp. {{ number_format(50000, 2, '.', '.') }}</td>
-                                <td>
-                                    <a href="{{ route('transaction.store', 1) }}" class="btn btn-sm btn-success">Add to cart</a>
-                                </td>
-                            </tr>
+                            @foreach ($items as $item)    
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $item->name }}</td>
+                                    <td>{{ $item->category->name }}</td>
+                                    <td>{{ $item->stock }}</td>
+                                    <td>Rp. {{ number_format($item->price, 2, '.', '.') }}</td>
+                                    <td>
+                                        <a href="{{ route('transaction.add', $item->id) }}" class="btn btn-sm btn-success">Add to cart</a>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </table>
                     </div>
                 </div>
@@ -39,30 +41,40 @@
                     </div>
                     <div class="card-body">
                         <table class="table">
-                            <tr>
+                            <thead>
                                 <th>#</th>
                                 <th>Item</th>
                                 <th class="col-md-2">Qty</th>
                                 <th>Subtotal</th>
                                 <th>Action</th>
-                            </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>Palu</td>
-                                <td><input class="form-control" type="number" value="3"></td>
-                                <td>{{ number_format(150000, 2, '.', '.') }}</td>
-                                <td>
-                                    <input type="reset" value="Hapus" class="btn btn-sm btn-danger">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="3" class="text-end">Grand Total</td>
-                                <td colspan="2"><input type="text" class="form-control" value="{{ number_format(150000, 2, '.', '.') }}" readonly></td>
-                            </tr>
-                            <tr>
-                                <td colspan="3" class="text-end">Payment</td>
-                                <td colspan="2"><input type="text" class="form-control"></td>
-                            </tr>
+                            </thead>
+                            @if(session('cart'))
+                                @php $grandtotal = 0; @endphp
+                                @foreach (session()->get('cart') as $id => $item)
+                                    @php $grandtotal += $item['subtotal']; @endphp    
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $item['name'] }}</td>
+                                        <td><input class="form-control" type="number" value="{{ $item['qty'] }}" readonly></td>
+                                        <td>{{ number_format($item['subtotal'], 2, '.', '.') }}</td>
+                                        <td>
+                                            <input type="reset" value="Hapus" class="btn btn-sm btn-danger">
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                <tr>
+                                    <td colspan="3" class="text-end">Grand Total</td>
+                                    <td colspan="2"><input type="text" class="form-control" value="{{ number_format($grandtotal, 2, '.', '.') }}" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-end">Payment</td>
+                                    <td colspan="2"><input type="text" class="form-control"></td>
+                                </tr>
+                            @else
+                                <tr>
+                                    <td colspan="5" class="text-center">Tidak ada item dalam cart</td>
+                                </tr>
+                            @endif
                         </table>
                         <div class="form-group d-flex justify-content-end">
                             <input type="reset" value="Reset" class="btn btn-sm btn-danger mx-1">
