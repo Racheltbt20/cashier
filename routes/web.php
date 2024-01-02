@@ -31,5 +31,7 @@ Route::middleware('auth')->group(function() {
     Route::resource('/item', ItemController::class);
     Route::resource('/transaction', TransactionController::class);
     Route::get('/transaction/add/{id}', [TransactionController::class, 'add'])->name('transaction.add');
+    Route::get('/transaction/delete/{id}', [TransactionController::class, 'delete'])->name('transaction.delete');
+    Route::post('/update', [TransactionController::class, 'cartUpdate'])->name('cart.update');
 });
 

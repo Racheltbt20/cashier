@@ -46,6 +46,34 @@ class TransactionController extends Controller
 
     }
 
+    public function delete($id)
+    {
+        $cart = session('cart');
+
+        if (isset($cart[$id])) {
+            unset($cart[$id]);
+            session()->put('cart', $cart);
+        }
+
+        return redirect()->back()->with('success', 'Successfully removed Item from Cart');
+    }
+
+    public function cartUpdate(Request $request)
+    {
+        $item = Item::findorfail($request->id);
+        $cart = session('cart');
+
+        $cart[$request->id]['qty'] = $request->qty;
+        $cart[$request->id]['subtotal'] = $item->price * $request->qty;
+        // $cart[$request->id]['subtotal'] *= $cart[$request->id]['qty'];
+        session()->put('cart', $cart);
+
+        return redirect()->back()->with('success', 'Successfully updated Cart');
+    }
+    /**
+     * Function tambahan untuk cart selesai
+     */
+
     /**
      * Show the form for creating a new resource.
      */
