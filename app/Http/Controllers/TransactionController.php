@@ -42,7 +42,7 @@ class TransactionController extends Controller
 
         session()->put('cart', $cart);
         // return session()->get('cart');
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Berhasil menambahkan item ke cart');
 
     }
 
@@ -55,7 +55,7 @@ class TransactionController extends Controller
             session()->put('cart', $cart);
         }
 
-        return redirect()->back()->with('success', 'Successfully removed Item from Cart');
+        return redirect()->back()->with('success', 'Berhasil menghapus item dari cart');
     }
 
     public function cartUpdate(Request $request)
@@ -63,12 +63,29 @@ class TransactionController extends Controller
         $item = Item::findorfail($request->id);
         $cart = session('cart');
 
-        $cart[$request->id]['qty'] = $request->qty;
-        $cart[$request->id]['subtotal'] = $item->price * $request->qty;
-        // $cart[$request->id]['subtotal'] *= $cart[$request->id]['qty'];
+        $message = [
+            'integer' => ':attribute harus diisi angka',
+            'min' => ':attribute minimal berjumlah :min'
+        ];
+
+        $validatedData = $request->validate([
+            'qty' => 'required|integer|min:1'
+        ], $message);
+
+        // if($request->qty < 1)  {
+        //     if (isset($cart[$item->id])) {
+        //         unset($cart[$item->id]);
+        //         session()->put('cart', $cart);
+        //     }
+        // }
+
+        // dd($validatedData['qty']);
+
+        $cart[$request->id]['qty'] = $validatedData['qty'];
+        $cart[$request->id]['subtotal'] = $item->price * $validatedData['qty'];
         session()->put('cart', $cart);
 
-        return redirect()->back()->with('success', 'Successfully updated Cart');
+        return redirect()->back()->with('success', 'Berhasil meng-update cart');
     }
     /**
      * Function tambahan untuk cart selesai

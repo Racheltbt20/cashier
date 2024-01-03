@@ -53,7 +53,7 @@
                             @method('POST')
                             <div class="form-group mb-2">
                                 <label for="name">Category Name</label>
-                                <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" id="name" placeholder="category name..." required>
+                                <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" id="name" placeholder="category name..." required value="{{ old('name') }}">
                                 @error('name')
                                     <div class="invalid-feedback">
                                         {{ $message }}
@@ -61,8 +61,8 @@
                                 @enderror
                             </div>
                             <div class="form-group d-flex justify-content-end">
-                                <button class="btn btn-danger mx-1" onclick="batal()" type="reset">batal</button>
-                                <input type="submit" value="Save" class="btn btn-success">
+                                <button class="btn btn-danger mx-1" onclick="batal()" type="reset">Batal</button>
+                                <input type="submit" value="Simpan" class="btn btn-success">
                             </div>
                         </form>
                     </div>

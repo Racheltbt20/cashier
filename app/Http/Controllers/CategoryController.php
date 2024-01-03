@@ -34,10 +34,12 @@ class CategoryController extends Controller
             'required' => ':attribute harus diisi',
             'min' => ':attribute minimal :min karakter',
             'max' => ':attribute minimal :max karakter',
+            'regex' => ':attribute harus huruf',
+            'unique' => 'nama telah digunakan'
         ];
 
         $validationData = $request->validate([
-            'name' => 'required|min:2|max:20'
+            'name' => 'required|min:2|max:20|regex:/^[a-zA-Z]+$/|unique:categories'
         ], $message);
 
         Category::create($validationData);
@@ -71,10 +73,12 @@ class CategoryController extends Controller
             'required' => ':attribute harus diisi',
             'min' => ':attribute minimal :min karakter',
             'max' => ':attribute minimal :max karakter',
+            'unique' => 'nama telah digunakan',
+            'regex' => ':attribute harus huruf',
         ];
 
         $validationData = $request->validate([
-            'name' => 'required|min:2|max:20'
+            'name' => 'required|min:2|max:20|regex:/^[a-zA-Z]+$/|unique:categories'
         ], $message);
 
         Category::where('id', $category->id)

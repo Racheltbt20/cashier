@@ -37,13 +37,17 @@ class ItemController extends Controller
             'required' => ':attribute harus diisi',
             'min' => ':attribute minimal :min karakter',
             'max' => ':attribute minimal :max karakter',
+            'unique' => 'nama sudah dipakai',
+            'integer' => ':attribute hanya bisa diisi angka',
+            'price.min' => ':attribute minimal Rp:min',
+            'stock.min' => ':attribute minimal berjumlah :min'
         ];
 
         $validationData = $request->validate([
             'category_id' =>'required',
-            'name' => 'required|min:2|max:20',
-            'price' => 'required',
-            'stock' => 'required'
+            'name' => 'required|min:2|max:20|unique:items',
+            'price' => 'required|integer|min:100',
+            'stock' => 'required|integer|min:1'
         ], $message);
 
         Item::create($validationData);
@@ -77,13 +81,17 @@ class ItemController extends Controller
             'required' => ':attribute harus diisi',
             'min' => ':attribute minimal :min karakter',
             'max' => ':attribute minimal :max karakter',
+            'unique' => 'nama sudah dipakai',
+            'integer' => ':attribute hanya bisa diisi angka',
+            'price.min' => ':attribute minimal Rp:min',
+            'stock.min' => ':attribute minimal berjumlah :min'
         ];
 
         $validationData = $request->validate([
             'category_id' =>'required',
-            'name' => 'required|min:2|max:20',
-            'price' => 'required',
-            'stock' => 'required'
+            'name' => 'required|min:2|max:20|unique:items',
+            'price' => 'required|integer|min:100',
+            'stock' => 'required|integer|min:1'
         ], $message);
 
         Item::where('id', $item->id)

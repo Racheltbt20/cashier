@@ -55,24 +55,29 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $item['name'] }}</td>
-                                        <td><input class="form-control" type="number" value="{{ $item['qty'] }}" readonly></td>
-                                        <td>{{ number_format($item['subtotal'], 2, '.', '.') }}</td>
-                                        <td>
-                                            <a id="delete{{ $loop->iteration }}" href="{{ route('transaction.delete', $item['id']) }}" class="btn btn-sm btn-danger"
-                                                onclick="return confirm('Remove this Item?')">
-                                                Remove
-                                            </a>
-                                            <input id="update{{ $loop->iteration }}" style="display: none" type="submit" class="btn btn-sm btn-primary" value="Update">
-                                        </td>
-                                    </tr>
+                                        <form action="{{ route('cart.update') }}" method="POST">
+                                            @csrf
 
-                                    {{-- JAVASCRIPT --}}
-                                    <script>
-                                        function ubah{{ $loop->iteration }}() {
-                                            $("#delete{{ $loop->iteration }}").hide();
-                                            $("#update{{ $loop->iteration }}").show();
-                                        }
-                                    </script>
+                                            <input type="hidden" name="id" value="{{ $item['id'] }}">
+                                            <td><input class="form-control @error('qty') is-invalid @enderror" onchange="ubah{{ $loop->iteration }}()" type="number" name="qty" id="qty" value="{{ $item['qty'] }}"></td>
+                                            <td>{{ number_format($item['subtotal'], 2, '.', '.') }}</td>
+                                            <td>
+                                                <a id="delete{{ $loop->iteration }}" href="{{ route('transaction.delete', $item['id']) }}" class="btn btn-sm btn-danger"
+                                                    onclick="return confirm('Hapus item ini?')">
+                                                    Hapus
+                                                </a>
+                                                <input id="update{{ $loop->iteration }}" style="display: none" type="submit" class="btn btn-sm btn-primary" value="Update">
+                                            </td>
+                                            
+                                            {{-- JAVASCRIPT --}}
+                                            <script>
+                                                function ubah{{ $loop->iteration }}() {
+                                                    $("#update{{ $loop->iteration }}").show();
+                                                    $("#delete{{ $loop->iteration }}").hide();
+                                                }
+                                                </script>
+                                        </form>
+                                    </tr>
                                 @endforeach
                                 <tr>
                                     <td colspan="3" class="text-end">Grand Total</td>
