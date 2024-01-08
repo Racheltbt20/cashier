@@ -60,7 +60,7 @@
 
                                             <input type="hidden" name="id" value="{{ $item['id'] }}">
                                             <td><input class="form-control @error('qty') is-invalid @enderror" onchange="ubah{{ $loop->iteration }}()" type="number" name="qty" id="qty" value="{{ $item['qty'] }}"></td>
-                                            <td>{{ number_format($item['subtotal'], 2, '.', '.') }}</td>
+                                            <td>Rp. {{ number_format($item['subtotal'], 2, '.', '.') }}</td>
                                             <td>
                                                 <a id="delete{{ $loop->iteration }}" href="{{ route('transaction.delete', $item['id']) }}" class="btn btn-sm btn-danger"
                                                     onclick="return confirm('Hapus item ini?')">
@@ -81,7 +81,7 @@
                                 @endforeach
                                 <tr>
                                     <td colspan="3" class="text-end">Grand Total</td>
-                                    <td colspan="2"><input type="text" class="form-control" value="{{ number_format($grandtotal, 2, '.', '.') }}" readonly></td>
+                                    <td colspan="2"><input type="text" class="form-control" value="Rp. {{ number_format($grandtotal, 2, '.', '.') }}" readonly></td>
                                 </tr>
                                 <tr>
                                     <td colspan="3" class="text-end">Payment</td>

@@ -81,7 +81,6 @@ class ItemController extends Controller
             'required' => ':attribute harus diisi',
             'min' => ':attribute minimal :min karakter',
             'max' => ':attribute minimal :max karakter',
-            'unique' => 'nama sudah dipakai',
             'integer' => ':attribute hanya bisa diisi angka',
             'price.min' => ':attribute minimal Rp:min',
             'stock.min' => ':attribute minimal berjumlah :min'
@@ -89,7 +88,7 @@ class ItemController extends Controller
 
         $validationData = $request->validate([
             'category_id' =>'required',
-            'name' => 'required|min:2|max:20|unique:items',
+            'name' => 'required|min:2|max:20',
             'price' => 'required|integer|min:100',
             'stock' => 'required|integer|min:1'
         ], $message);
@@ -97,7 +96,7 @@ class ItemController extends Controller
         Item::where('id', $item->id)
                 ->update($validationData);
         
-        return redirect()->back()->with('success', 'Data berhasil diedit');
+        return redirect()->back()->with('success', 'Item berhasil diedit');
     }
 
     /**

@@ -44,7 +44,7 @@ class CategoryController extends Controller
 
         Category::create($validationData);
 
-        return redirect()->back()->with('success', 'Category berhasil ditambahkan');
+        return redirect()->back()->with('success', 'Kategori berhasil ditambahkan');
     }
 
     /**
@@ -73,18 +73,17 @@ class CategoryController extends Controller
             'required' => ':attribute harus diisi',
             'min' => ':attribute minimal :min karakter',
             'max' => ':attribute minimal :max karakter',
-            'unique' => 'nama telah digunakan',
             'regex' => ':attribute harus huruf',
         ];
 
         $validationData = $request->validate([
-            'name' => 'required|min:2|max:20|regex:/^[a-zA-Z]+$/|unique:categories'
+            'name' => 'required|min:2|max:20|regex:/^[a-zA-Z]+$/'
         ], $message);
 
         Category::where('id', $category->id)
                 ->update($validationData);
         
-        return redirect()->back()->with('success', 'Data berhasil diedit');
+        return redirect()->back()->with('success', 'Kategori berhasil diedit');
     }
 
     /**
@@ -94,6 +93,6 @@ class CategoryController extends Controller
     {
         Category::find($category->id)->delete();
 
-        return redirect()->back()->with('success', 'Data berhasil dihapus');
+        return redirect()->back()->with('success', 'Kategori berhasil dihapus');
     }
 }
