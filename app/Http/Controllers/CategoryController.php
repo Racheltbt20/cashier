@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
@@ -39,7 +40,7 @@ class CategoryController extends Controller
         ];
 
         $validationData = $request->validate([
-            'name' => 'required|min:2|max:20|regex:/^[a-zA-Z]+$/|unique:categories'
+            'name' => 'required|min:2|max:20|regex:/^[a-zA-Z0-9 ]+$/|unique:categories'
         ], $message);
 
         Category::create($validationData);
@@ -74,14 +75,24 @@ class CategoryController extends Controller
             'min' => ':attribute minimal :min karakter',
             'max' => ':attribute minimal :max karakter',
             'regex' => ':attribute harus huruf',
+            'unique' => 'nama telah digunakan'
         ];
 
-        $validationData = $request->validate([
-            'name' => 'required|min:2|max:20|regex:/^[a-zA-Z]+$/'
+        $validationData = Validator::make($request->all(), [
+            'name' => 'required|min:2|max:20|regex:/^[a-zA-Z0-9 ]+$/|unique:categories'
         ], $message);
 
-        Category::where('id', $category->id)
-                ->update($validationData);
+        if($validationData->fails()) {
+            return back()->withErrors($validationData)->withInput()->with('error_update', [
+                'a' => $category->id
+            ]);
+        }
+
+        $category->name = $request->name;
+        $category->save();
+
+        // Category::where('id', $category->id)
+        //         ->update($validationData);
         
         return redirect()->back()->with('success', 'Kategori berhasil diedit');
     }

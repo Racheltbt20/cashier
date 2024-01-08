@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Item;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ItemController extends Controller
 {
@@ -86,15 +87,24 @@ class ItemController extends Controller
             'stock.min' => ':attribute minimal berjumlah :min'
         ];
 
-        $validationData = $request->validate([
+        $validationData = Validator::make($request->all(), [
             'category_id' =>'required',
             'name' => 'required|min:2|max:20',
             'price' => 'required|integer|min:100',
-            'stock' => 'required|integer|min:1'
+            'stock' => 'required|integer|min:0'
         ], $message);
 
-        Item::where('id', $item->id)
-                ->update($validationData);
+        if($validationData->fails()) {
+            return back()->withErrors($validationData)->withInput()->with('error_update', [
+                'a' => $item->id
+            ]);
+        }
+        
+        $item->name = $request->name;
+        $item->category_id = $request->category_id;
+        $item->stock = $request->stock;
+        $item->price = $request->price;
+        $item->save();
         
         return redirect()->back()->with('success', 'Item berhasil diedit');
     }

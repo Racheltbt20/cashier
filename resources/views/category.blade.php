@@ -92,4 +92,10 @@
         }
     </script>
 
+    @if (Session::has('error_update'))
+        <script>
+            edit('{{ session('error_update')['a'] }}')
+        </script>
+    @endif
+
 @endsection

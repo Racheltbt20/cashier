@@ -66,7 +66,7 @@
                             </div>
                             <div class="form-group mb-2">
                                 <label for="name">Item Name</label>
-                                <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" id="name" placeholder="item name..." required value="{{ old('name') }}">
+                                <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" id="name" placeholder="item name..." required >
                                 @error('name')
                                     <div class="invalid-feedback">
                                         {{ $message }}
@@ -75,7 +75,7 @@
                             </div>
                             <div class="form-group mb-2">
                                 <label for="price">Price</label>
-                                <input type="text" class="form-control @error('price') is-invalid @enderror" name="price" id="price" placeholder="item price..." required value="{{ old('price') }}">
+                                <input type="text" class="form-control @error('price') is-invalid @enderror" name="price" id="price" placeholder="item price..." required >
                                 @error('price')
                                     <div class="invalid-feedback">
                                         {{ $message }}
@@ -83,8 +83,8 @@
                                 @enderror
                             </div>
                             <div class="form-group mb-2">
-                                <label for="">Stock</label>
-                                <input type="number" class="form-control @error('stock') is-invalid @enderror" name="stock" id="stock" placeholder="item stock..." required value="{{ old('stock') }}">
+                                <label for="stock">Stock</label>
+                                <input type="number" class="form-control @error('stock') is-invalid @enderror" name="stock" id="stock" placeholder="item stock..." required >
                                 @error('stock')
                                     <div class="invalid-feedback">
                                         {{ $message }}
@@ -119,11 +119,20 @@
         }
 
         function batal() {
-            document.getElementById("card-head").innerHTML = "Tambah Category";
-            var action = '{{ route("category.store") }}';
-            $("#form-category").attr("action", action);
+            document.getElementById("card-head").innerHTML = "Tambah Item";
+            var action = '{{ route("item.store") }}';
+            $("#form-item").attr("action", action);
+            $('#category_id').val("");
             $('#name').val("");
+            $('#price').val("");
+            $('#stock').val("");
         }
     </script>
+
+    @if (Session::has('error_update'))
+        <script>
+            edit('{{ session('error_update')['a'] }}')
+        </script>
+    @endif
 
 @endsection
