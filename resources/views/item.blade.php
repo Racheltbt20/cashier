@@ -55,7 +55,7 @@
                                 <select class="form-select @error('category_id') is-invalid @enderror" id="category_id" name="category_id" aria-label="category_id">
                                     <option selected disabled>Item Category...</option>
                                     @foreach ($categories as $category)    
-                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                                     @endforeach
                                 </select>
                                 @error('category_id')
@@ -66,7 +66,7 @@
                             </div>
                             <div class="form-group mb-2">
                                 <label for="name">Item Name</label>
-                                <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" id="name" placeholder="item name..." required >
+                                <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" id="name" placeholder="item name..." required value="{{ old('name') }}">
                                 @error('name')
                                     <div class="invalid-feedback">
                                         {{ $message }}
@@ -75,7 +75,7 @@
                             </div>
                             <div class="form-group mb-2">
                                 <label for="price">Price</label>
-                                <input type="text" class="form-control @error('price') is-invalid @enderror" name="price" id="price" placeholder="item price..." required >
+                                <input type="text" class="form-control @error('price') is-invalid @enderror" name="price" id="price" placeholder="item price..." required value="{{ old('price') }}">
                                 @error('price')
                                     <div class="invalid-feedback">
                                         {{ $message }}
@@ -84,7 +84,7 @@
                             </div>
                             <div class="form-group mb-2">
                                 <label for="stock">Stock</label>
-                                <input type="number" class="form-control @error('stock') is-invalid @enderror" name="stock" id="stock" placeholder="item stock..." required >
+                                <input type="number" class="form-control @error('stock') is-invalid @enderror" name="stock" id="stock" placeholder="item stock..." required value="{{ old('stock') }}">
                                 @error('stock')
                                     <div class="invalid-feedback">
                                         {{ $message }}

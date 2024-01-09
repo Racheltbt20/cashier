@@ -34,7 +34,7 @@ class CategoryController extends Controller
         $message = [
             'required' => ':attribute harus diisi',
             'min' => ':attribute minimal :min karakter',
-            'max' => ':attribute minimal :max karakter',
+            'max' => ':attribute maksimal :max karakter',
             'regex' => ':attribute harus huruf',
             'unique' => 'nama telah digunakan'
         ];
@@ -79,7 +79,7 @@ class CategoryController extends Controller
         ];
 
         $validationData = Validator::make($request->all(), [
-            'name' => 'required|min:2|max:20|regex:/^[a-zA-Z0-9 ]+$/|unique:categories'
+            'name' => 'required|min:2|max:20|regex:/^[a-zA-Z0-9 ]+$/'
         ], $message);
 
         if($validationData->fails()) {
