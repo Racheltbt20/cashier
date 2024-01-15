@@ -75,28 +75,42 @@
                                                     $("#update{{ $loop->iteration }}").show();
                                                     $("#delete{{ $loop->iteration }}").hide();
                                                 }
-                                                </script>
+                                            </script>
                                         </form>
                                     </tr>
                                 @endforeach
-                                <tr>
-                                    <td colspan="3" class="text-end">Grand Total</td>
-                                    <td colspan="2"><input type="text" class="form-control" value="Rp. {{ number_format($grandtotal, 2, '.', '.') }}" readonly></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3" class="text-end">Payment</td>
-                                    <td colspan="2"><input type="text" class="form-control"></td>
-                                </tr>
-                            @else
-                                <tr>
-                                    <td colspan="5" class="text-center">Tidak ada item dalam cart</td>
-                                </tr>
-                            @endif
-                        </table>
-                        <div class="form-group d-flex justify-content-end">
-                            <input type="reset" value="Reset" class="btn btn-sm btn-danger mx-1">
-                            <input type="submit" value="Checkout" class="btn btn-sm btn-primary">
-                        </div>
+                                <form action="{{ route('transaction.store') }}" method="post">
+                                    @csrf
+
+                                    <tr>
+                                        <td colspan="3" class="text-end">Grand Total</td>
+                                        <td colspan="2">
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="basic-addon1">Rp.</span>
+                                                <input type="text" name="total" class="form-control" placeholder="total" aria-label="total" aria-describedby="basic-addon1" value="{{ $grandtotal }}" readonly>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" class="text-end">Payment</td>
+                                        <td colspan="2">
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="basic-addon1">Rp.</span>
+                                                <input type="text" name="pay_total" class="form-control" placeholder="total payment" aria-label="total payment" aria-describedby="basic-addon1">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @else
+                                        <tr>
+                                            <td colspan="5" class="text-center">Tidak ada item dalam cart</td>
+                                        </tr>
+                                    @endif
+                                    </table>
+                                    <div class="form-group d-flex justify-content-end">
+                                        <input type="reset" value="Reset" class="btn btn-sm btn-danger mx-1">
+                                        <input type="submit" value="Checkout" class="btn btn-sm btn-primary">
+                                    </div>
+                                </form>
                     </div>
                 </div>
             </div>

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Transaction;
 use App\Models\Item;
+use App\Models\Transaction;
+use App\Models\TransactionDetail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
@@ -98,8 +101,31 @@ class TransactionController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        //
+    {        
+        Transaction::create([
+            'user_id' => Auth::id(),
+            'date' => Carbon::now(),
+            'total' => $request->total,
+            'pay_total' => $request->pay_total
+        ]);
+
+        $cart = session()->get('cart');
+        foreach($cart as $item) {
+            TransactionDetail::create([
+                'transaction_id' => Transaction::latest()->first()->id,
+                'item_id' => $item['id'],
+                'qty' => $item['qty'],
+                'subtotal' => $item['subtotal']
+            ]);
+
+            $product = Item::find($item['id']);
+            $stock = $product->stock - $item['qty'];
+            $product->update(['stock' => $stock]);
+
+        }
+
+        session()->forget('cart');
+        return redirect()->back()->with('success', 'Checkout berhasil');
     }
 
     /**
