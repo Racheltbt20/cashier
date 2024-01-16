@@ -26,7 +26,7 @@ class TransactionController extends Controller
      * Function tambahan untuk cart
      */
     public function add($id)
-    {
+    { 
         $item = Item::findorfail($id);
 
         $cart = session()->get('cart');
@@ -35,12 +35,16 @@ class TransactionController extends Controller
             $cart[$id]['qty'] += 1;
             $cart[$id]['subtotal'] = $item->price * $cart[$id]['qty'];
         } else{
-            $cart[$id] = [
-                "id" => $item->id,
-                "name" => $item->name,
-                "qty" => 1,
-                "subtotal" => $item->price
-            ];
+            if($item->stock > 0) {
+                $cart[$id] = [
+                    "id" => $item->id,
+                    "name" => $item->name,
+                    "qty" => 1,
+                    "subtotal" => $item->price
+                ];
+            } else {
+                return redirect()->back()->with('error', 'Item kosong!');
+            }
         }
 
         session()->put('cart', $cart);
@@ -65,15 +69,6 @@ class TransactionController extends Controller
     {
         $item = Item::findorfail($request->id);
         $cart = session('cart');
-
-        // $message = [
-        //     'integer' => ':attribute harus diisi angka',
-        //     'min' => ':attribute minimal berjumlah :min'
-        // ];
-
-        // $validatedData = $request->validate([
-        //     'qty' => 'required|integer|min:1'
-        // ], $message);
 
         if($request->qty > 0) {
             $cart[$request->id]['qty'] = $request->qty;
@@ -124,8 +119,13 @@ class TransactionController extends Controller
 
         }
 
+        if ($request->total > $request->pay_total) {
+            return redirect()->back()->with('error', 'Uang anda kurang');
+        }
+
         session()->forget('cart');
-        return redirect()->back()->with('success', 'Checkout berhasil');
+        return redirect()->route('transaction.show', Transaction::latest()->first()->id);
+        // ->back()->with('success', 'Checkout berhasil');
     }
 
     /**
@@ -133,7 +133,9 @@ class TransactionController extends Controller
      */
     public function show(Transaction $transaction)
     {
-        //
+        $transaksi = Transaction::findorfail($transaction->id);
+
+        return view('invoice', compact('transaksi'));
     }
 
     /**

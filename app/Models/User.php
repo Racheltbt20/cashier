@@ -44,7 +44,7 @@ class User extends Authenticatable
     ];
 
     /* RELASI */
-    public function getTransaction() {
+    public function transaction() {
         return $this->hasMany(Transaction::class);
     }
 }

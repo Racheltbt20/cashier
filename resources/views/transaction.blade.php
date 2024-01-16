@@ -96,7 +96,7 @@
                                         <td colspan="2">
                                             <div class="input-group">
                                                 <span class="input-group-text" id="basic-addon1">Rp.</span>
-                                                <input type="text" name="pay_total" class="form-control" placeholder="total payment" aria-label="total payment" aria-describedby="basic-addon1">
+                                                <input type="text" name="pay_total" class="form-control" placeholder="total payment" aria-label="total payment" aria-describedby="basic-addon1" required>
                                             </div>
                                         </td>
                                     </tr>
