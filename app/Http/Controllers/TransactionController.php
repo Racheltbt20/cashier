@@ -71,9 +71,13 @@ class TransactionController extends Controller
         $cart = session('cart');
 
         if($request->qty > 0) {
-            $cart[$request->id]['qty'] = $request->qty;
-            $cart[$request->id]['subtotal'] = $item->price * $request->qty;
-            session()->put('cart', $cart);
+            if($request->qty <= $item->stock) {
+                $cart[$request->id]['qty'] = $request->qty;
+                $cart[$request->id]['subtotal'] = $item->price * $request->qty;
+                session()->put('cart', $cart);
+            } else {
+                return redirect()->back()->with('error', 'Item kosong!');
+            }
         } else {
             $this->delete($request->id);
         }

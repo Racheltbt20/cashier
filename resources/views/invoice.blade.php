@@ -58,11 +58,15 @@
             color: white;
             font-weight: bold;
         }
+        img {
+            width: 25%;
+        }
     </style>
 </head>
-<body>
+<body onload="printout()"> <!-- onload="printout()" -->
     <div class="container">
         <div class="header" style="margin-bottom: 30px;">
+            <img src="{{ asset('img/logo.jpg') }}" alt="">
             <h2>┗|｀O′|┛ Toko Sembarang</h2>
             <small> Jl. Kedepan No. 69, Haiyaa, Surabaya, Jawa Timur</small>
         </div>
@@ -120,4 +124,19 @@
         </div>
     </div>
 </body>
+
+<script>
+    // auto print
+    // var lama = 1000;
+    t = null;
+    function printout() {
+        window.print();
+        t = setTimeout("self.close()", 2000);
+    }
+
+    window.onafterprint = function(e) {
+        window.location.href = '{{ route('transaction.index') }}'
+    }
+</script>
+
 </html>
