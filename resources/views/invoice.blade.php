@@ -59,14 +59,14 @@
             font-weight: bold;
         }
         img {
-            width: 25%;
+            width: 100px;
         }
     </style>
 </head>
 <body onload="printout()"> <!-- onload="printout()" -->
     <div class="container">
         <div class="header" style="margin-bottom: 30px;">
-            <img src="{{ asset('img/logo.jpg') }}" alt="">
+            <img src="{{ asset('img/hmz.png') }}" alt="">
             <h2>┗|｀O′|┛ Toko Sembarang</h2>
             <small> Jl. Kedepan No. 69, Haiyaa, Surabaya, Jawa Timur</small>
         </div>
@@ -131,7 +131,7 @@
     t = null;
     function printout() {
         window.print();
-        t = setTimeout("self.close()", 2000);
+        t = setTimeout("self.close()", 5000);
     }
 
     window.onafterprint = function(e) {

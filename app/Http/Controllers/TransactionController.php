@@ -18,7 +18,7 @@ class TransactionController extends Controller
     {
         // session()->flush();
         return view('transaction', [
-            "items" => Item::all()
+            "items" => Item::where('stock', '>', 0)->get()
         ]);
     }
 
@@ -76,7 +76,7 @@ class TransactionController extends Controller
                 $cart[$request->id]['subtotal'] = $item->price * $request->qty;
                 session()->put('cart', $cart);
             } else {
-                return redirect()->back()->with('error', 'Item kosong!');
+                return redirect()->back()->with('error', 'Item sisa ' . $item->stock . '!');
             }
         } else {
             $this->delete($request->id);
@@ -109,6 +109,8 @@ class TransactionController extends Controller
         ]);
 
         $cart = session()->get('cart');
+
+        
         foreach($cart as $item) {
             TransactionDetail::create([
                 'transaction_id' => Transaction::latest()->first()->id,
@@ -116,16 +118,17 @@ class TransactionController extends Controller
                 'qty' => $item['qty'],
                 'subtotal' => $item['subtotal']
             ]);
-
+            
+            if ($request->total > $request->pay_total) {
+                return redirect()->back()->with('error', 'Uang anda kurang');
+            }
+            
             $product = Item::find($item['id']);
             $stock = $product->stock - $item['qty'];
             $product->update(['stock' => $stock]);
 
         }
 
-        if ($request->total > $request->pay_total) {
-            return redirect()->back()->with('error', 'Uang anda kurang');
-        }
 
         session()->forget('cart');
         return redirect()->route('transaction.show', Transaction::latest()->first()->id);
